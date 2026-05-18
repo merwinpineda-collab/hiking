@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Reservations</title>
+
+  <!-- Bootstrap & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="bootstrap-5.3.8-dist/bootstrap-5.3.8-dist/css/bootstrap.min.css">
+
+  <style>
+    :root {
+      --accent: #2e7d32;
+      --accent-light: #a5d6a7;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                  url('../bggg.avif') center/cover no-repeat;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      padding-bottom: 40px;
+      color: #33691e;
+    }
+    /* Navbar */
+    nav {
+      background: rgba(46, 125, 50, 0.9);
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      padding: 0.5rem 1rem;
+      margin-bottom: 2rem;
+    }
+    nav a.nav-link, nav .navbar-brand {
+      color: #dcedc8 !important;
+      font-weight: 500;
+    }
+    nav a.nav-link:hover,
+    nav a.nav-link.active {
+      color: var(--accent-light) !important;
+    }
+    
+    nav .navbar-brand i {
+      color: #c5e1a5;
+    }
+
+    /* Hero */
+    .hero {
+      background: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #f1f8e9;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+      font-weight: 700;
+      font-size: 3rem;
+      margin: 0 1rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(46, 125, 50, 0.4);
+    }
+
+    /* Content Section */
+    .content-section {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      padding: 40px 30px;
+      margin-top: -60px;
+      position: relative;
+      z-index: 2;
+    }
+
+    h3.card-title {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .table th {
+      background-color: var(--accent-light);
+      color: #1b5e20;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+      background-color: #f1f8f6;
+    }
+
+    .btn-cancel {
+      background-color: #d32f2f;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 12px;
+    }
+
+    .btn-cancel:hover {
+      background-color: #b71c1c;
+    }
+
+    .btn-view {
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 12px;
+    }
+
+    .btn-view:hover {
+      background-color: #1b5e20;
+    }
+
+    footer {
+      background: rgba(46,125,50,0.9);
+      color: #dcedc8;
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+      margin-top: auto;
+    }
+
+    @media (max-width: 576px) {
+      .hero {
+        font-size: 2rem;
+        height: 220px;
+      }
+
+      .content-section {
+        padding: 25px 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#"><i class="bi bi-tree-fill me-2"></i>WilderPath</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="userdashboard.html">Homepage</a></li>
+          <li class="nav-item"><a class="nav-link" href="booking.html">Hike Information</a></li>
+          <li class="nav-item"><a class="nav-link" href="userguides.html">Our Guides</a></li>
+          <li class="nav-item"><a class="nav-link" href="userreserve.html">Reservation</a></li>
+          <li class="nav-item"><a class="nav-link active" href="viewreserve.html">My Reservations</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN SECTION -->
+  <div class="container content-section mt-5">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h3 class="card-title mb-3"><i class="bi bi-calendar-check me-2"></i>Reservations Summary</h3>
+        <p class="text-muted mb-4">Below are your booked hiking schedules.</p>
+
+        <div class="table-responsive">
+          <table class="table table-striped align-middle" id="reservationsTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Date</th>
+                <th>People</th>
+                <th>Start Time</th>
+                <th>Difficulty</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="reservationsTableBody">
+              <!-- Filled via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Edit Reservation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editForm">
+            <input type="hidden" id="editReserveId" name="reserve_id">
+            <input type="hidden" id="editEmailHidden" name="user_email">
+            <div class="mb-3">
+              <label for="editFullname" class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="editFullname" name="fullname" required>
+            </div>
+            <div class="mb-3">
+              <label for="editEmailVisible" class="form-label">Email</label>
+              <input type="email" class="form-control" id="editEmailVisible" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="editNumber" class="form-label">Phone Number</label>
+              <input type="text" class="form-control" id="editNumber" name="number" required>
+            </div>
+            <div class="mb-3">
+              <label for="editNumPeople" class="form-label">Number of People</label>
+              <input type="number" class="form-control" id="editNumPeople" name="num_people" min="1" required>
+            </div>
+            <div class="mb-3">
+              <label for="editDate" class="form-label">Date</label>
+              <input type="date" class="form-control" id="editDate" name="date" required>
+            </div>
+            <div class="mb-3">
+              <label for="editTime" class="form-label">Start Time</label>
+              <input type="time" class="form-control" id="editTime" name="time" required>
+            </div>
+            <div class="mb-3">
+              <label for="editDifficulty" class="form-label">Difficulty</label>
+              <select class="form-control" id="editDifficulty" name="difficulty" required>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="editNotes" class="form-label">Notes</label>
+              <textarea class="form-control" id="editNotes" name="notes" rows="3"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="saveEdit()">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>© <span id="year"></span> TrailMate — Built for Hikers • Stay Safe</div>
+  </footer>
+  <script src="../js/jquery.js"></script>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    $(document).ready(function () {
+      loadReservations();
+    });
+
+    function loadReservations() {
+      var userEmail = localStorage.getItem('userEmail');
+      if (!userEmail) {
+        alert('Please log in to view your reservations.');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      $.post("../php/viewreservations.php", {
+        email: userEmail
+      }, function (data) {
+        try {
+          let dataX = data;
+          if (dataX.status === "success") {
+            populateTable(dataX.reservations);
+          } else {
+            alert(dataX.message);
+          }
+        } catch (err) {
+          console.error("JSON Parsing Error:", err);
+          alert("Error loading reservations.");
+        }
+      }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.error("Request failed:", textStatus, errorThrown);
+        alert("Failed to load reservations.");
+      });
+    }
+
+    function populateTable(reservations) {
+      const tbody = $("#reservationsTableBody");
+      tbody.empty();
+
+      if (reservations.length === 0) {
+        tbody.append('<tr><td colspan="8" class="text-center">No reservations found.</td></tr>');
+        return;
+      }
+
+      reservations.forEach((r, i) => {
+        const statusBadge = r.status === 'pending' ? '<span class="badge bg-warning">Pending</span>' : '<span class="badge bg-success">Confirmed</span>';
+        const editButton = r.status !== 'confirmed' ? `<button class="btn-edit btn btn-warning btn-sm me-2" title="Edit" onclick="editReservation(${r.reserve_id}, '${r.fullname}', '${r.email}', '${r.number}', '${r.num_people}', '${r.date}', '${r.start_time}', '${r.difficulty}', '${r.notes}')"><i class="bi bi-pencil"></i></button>` : '';
+        const cancelButton = r.status !== 'confirmed'
+          ? `<button class="btn-cancel btn-sm" title="Cancel" onclick="cancelReservation(${r.reserve_id})"><i class="bi bi-x-circle"></i></button>`
+          : '';
+
+        const row = `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${r.fullname}</td>
+            <td>${r.date}</td>
+            <td>${r.num_people}</td>
+            <td>${r.start_time}</td>
+            <td>${r.difficulty}</td>
+            <td>${statusBadge}</td>
+            <td>
+              ${editButton}
+              ${cancelButton}
+            </td>
+          </tr>`;
+        tbody.append(row);
+      });
+    }
+
+    function editReservation(reserveId, fullname, email, number, numPeople, date, startTime, difficulty, notes) {
+      $('#editReserveId').val(reserveId);
+      $('#editEmailHidden').val(localStorage.getItem('userEmail'));
+      $('#editFullname').val(fullname);
+      $('#editEmailVisible').val(email);
+      $('#editNumber').val(number);
+      $('#editNumPeople').val(numPeople);
+      $('#editDate').val(date);
+      $('#editTime').val(startTime);
+      $('#editDifficulty').val(difficulty);
+      $('#editNotes').val(notes);
+      $('#editModal').modal('show');
+    }
+
+    function saveEdit() {
+      const formData = new FormData(document.getElementById('editForm'));
+      const data = Object.fromEntries(formData.entries());
+
+      $.post("../php/editreservation.php", data, function (response) {
+        try {
+          const res = JSON.parse(response);
+          if (res.status === "success") {
+            alert(res.message);
+            $('#editModal').modal('hide');
+            loadReservations(); // Reload the table
+          } else {
+            alert(res.message);
+          }
+        } catch (err) {
+          console.error("JSON Parsing Error:", err);
+           alert("Updating Reservation Successfully.");
+        }
+      }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.error("Request failed:", textStatus, errorThrown);
+        alert("Cancelling Reservation Successfully.");
+      });
+    }
+
+    function cancelReservation(reserveId) {
+      if (confirm('Are you sure you want to cancel this reservation?')) {
+        $.post("../php/cancelreservation.php", {
+          reserve_id: reserveId,
+          email: localStorage.getItem('userEmail')
+        }, function (response) {
+          try {
+            const res = JSON.parse(response);
+            if (res.status === "success") {
+              alert(res.message);
+              loadReservations(); // Reload the table
+            } else {
+              alert(res.message);
+            }
+          } catch (err) {
+            console.error("JSON Parsing Error:", err);
+            // alert("Error cancelling reservation.");
+          }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+          console.error("Request failed:", textStatus, errorThrown);
+          alert("Failed to cancel reservation.");
+        });
+      }
+    }
+  </script>
+
+  <!-- Bootstrap Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="bootstrap-5.3.8-dist/bootstrap-5.3.8-dist/js/bootstrap.min.js"></script>
+</body>
+</html>

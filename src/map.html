@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Umap + Routing Example</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+    <style>
+        #map { width: 100%; height: 600px; }
+    </style>
+</head>
+<body>
+    <h2>Search & Route Map</h2>
+    <div id="map"></div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <!-- Leaflet Routing Machine -->
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <!-- Leaflet Geocoder (search box) -->
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+    <script>
+        // Initialize map
+        var map = L.map('map').setView([14.5995, 120.9842], 13); // Manila
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Default start point
+        var start = L.latLng(14.5995, 120.9842);
+
+        // Initialize routing control
+        var routingControl = L.Routing.control({
+            waypoints: [start, start], // Start and end same initially
+            routeWhileDragging: true,
+            showAlternatives: true,
+        }).addTo(map);
+
+        // Add search box
+        var geocoder = L.Control.geocoder({
+            defaultMarkGeocode: false
+        })
+        .on('markgeocode', function(e) {
+            var dest = e.geocode.center;
+            // Update routing to new destination
+            routingControl.setWaypoints([start, dest]);
+            map.fitBounds(L.latLngBounds([start, dest]));
+        })
+        .addTo(map);
+    </script>
+</body>
+</html>

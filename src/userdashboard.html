@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hiking User Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link rel="stylesheet" href="bootstrap-5.3.8-dist/bootstrap-5.3.8-dist/css/bootstrap.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+    /* Body */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                  url('../bggg.avif') center/cover no-repeat;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      padding-bottom: 40px;
+      color: #33691e;
+    }
+
+    /* Navbar */
+    /* Navbar */
+    nav {
+      background: rgba(46, 125, 50, 0.9);
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      padding: 0.5rem 1rem;
+      margin-bottom: 2rem;
+    }
+    nav a.nav-link, nav .navbar-brand {
+      color: #dcedc8 !important;
+      font-weight: 500;
+    }
+    nav a.nav-link:hover,
+    nav a.nav-link.active {
+      color: var(--accent-light) !important;
+    }
+    
+    nav .navbar-brand i {
+      color: #c5e1a5;
+    }
+
+    /* Hero Section */
+    .hero {
+    height: 320px;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff; /* changed to white for contrast */
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); /* darker for better readability */
+    font-weight: 700;
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    user-select: none;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: background-image 0.7s ease-in-out;
+  }
+
+    /* Main Content Container */
+    main.container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      padding: 2.5rem 3rem;
+      max-width: 900px;
+      width: 100%;
+      color: #33691e;
+    }
+
+    h2 {
+      font-weight: 700;
+      color: #2e7d32;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    h2 i {
+      font-size: 1.6rem;
+      color: #66bb6a;
+    }
+
+    .info-block {
+      margin-bottom: 2rem;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    /* Gallery */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+    .gallery img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+    .gallery img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(102, 187, 106, 0.6);
+    }
+
+    /* List Styling */
+    ul {
+      padding-left: 1.3rem;
+      font-weight: 500;
+    }
+    ul li {
+      margin-bottom: 0.6rem;
+      color: #4caf50;
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(46,125,50,0.9);
+      color: #dcedc8;
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+      margin-top: auto;
+    }
+
+    /* Weather Widget - Glassmorphism */
+    .weather-card {
+      position: fixed;
+      top: 90px;
+      right: 20px;
+      z-index: 1000;
+      width: 260px;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      color: #fff;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+      transition: transform 0.3s ease;
+    }
+    .weather-card:hover {
+      transform: translateY(-4px);
+    }
+    .weather-card .location {
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 0.9;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .weather-card .temp {
+      font-size: 3.4rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .weather-card .condition {
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-top: 4px;
+      text-transform: capitalize;
+    }
+    .weather-card .weather-icon {
+      font-size: 2.8rem;
+      margin-bottom: 8px;
+    }
+    .weather-card .weather-details {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.25);
+      font-size: 0.8rem;
+    }
+    .weather-card .weather-details div {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .weather-card .weather-error {
+      font-size: 0.85rem;
+      text-align: center;
+      padding: 10px 0;
+    }
+    .weather-card .loading-spinner {
+      text-align: center;
+      padding: 15px 0;
+    }
+
+    @media (max-width: 768px) {
+      .weather-card {
+        position: relative;
+        top: auto;
+        right: auto;
+        width: 100%;
+        margin: 0 auto 20px;
+        max-width: 320px;
+      }
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 576px) {
+      main.container {
+        padding: 1.5rem 1.8rem;
+      }
+      .hero {
+        font-size: 2.2rem;
+        height: 240px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#"><i class="bi bi-tree-fill me-2"></i>WilderPath</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" href="userdashboard.html">Homepage</a></li>
+          <li class="nav-item"><a class="nav-link" href="booking.html">Hike Information</a></li>
+          <li class="nav-item"><a class="nav-link" href="userguides.html">Our Guides</a></li>
+          <li class="nav-item"><a class="nav-link" href="userreserve.html">Reservation</a></li>
+          <li class="nav-item"><a class="nav-link" href="viewreserve.html">My Reservations</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Weather Widget -->
+  <div class="weather-card" id="weatherCard">
+    <div class="loading-spinner">
+      <div class="spinner-border spinner-border-sm text-light" role="status"></div>
+      <div class="mt-2" style="font-size:0.8rem;">Loading weather...</div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero" aria-label="Welcome to TrailMate">
+    Welcome to WilderPath
+  </section>
+
+  <!-- Main Content -->
+  <main class="container content-section my-5" role="main">
+    <div class="info-block text-center">
+      <h2><i class="bi bi-map"></i> Discover the Trail</h2>
+      <p>Reconnect with nature through our serene hiking paths surrounded by lush greenery and scenic mountain views. Perfect for beginners and seasoned hikers alike.</p>
+    </div>
+
+    <!-- Gallery Section -->
+    <div class="info-block">
+      <h2><i class="bi bi-image"></i> Hiking Spot Gallery</h2>
+      <div class="gallery" role="list">
+        <img src="../1.jpg" alt="Hiking Trail 1" role="listitem" />
+        <img src="../2.jpg" alt="Hiking Trail 2" role="listitem" />
+        <img src="../3.jpg" alt="Hiking Trail 3" role="listitem" />
+        <img src="../4.jpg" alt="Hiking Trail 4" role="listitem" />
+        <img src="../5.jpg" alt="Hiking Trail 5" role="listitem" />
+        <img src="../6.jpg" alt="Hiking Trail 6" role="listitem" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 info-block">
+        <h2><i class="bi bi-clock"></i> Operating Hours</h2>
+        <p>Open Daily: 6:00 AM – 6:00 PM<br>Closed during severe weather conditions.</p>
+      </div>
+    </div>
+
+    <div class="info-block">
+      <h2><i class="bi bi-shield-check"></i> Quick Safety Tips</h2>
+      <ul>
+        <li>Bring water, snacks, and sun protection.</li>
+        <li>Wear proper footwear.</li>
+        <li>Inform staff before starting your hike.</li>
+        <li>Emergency Hotline: <strong>+63 912 345 6789</strong></li>
+      </ul>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 TrailMate | All Rights Reserved</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="bootstrap-5.3.8-dist/bootstrap-5.3.8-dist/js/bootstrap.min.js"></script>
+
+<script>
+  // Hero background slideshow
+  const images = ['../1.jpg', '../6.jpg', '../5.jpg', '../2.jpg', '../3.jpg', '../4.jpg'];
+  let currentIndex = 0;
+  const hero = document.querySelector('.hero');
+
+  function changeBackground() {
+    hero.style.backgroundImage = `url('${images[currentIndex]}')`;
+    currentIndex = (currentIndex + 1) % images.length;
+  }
+  changeBackground();
+  setInterval(changeBackground, 2000);
+
+  // Weather Widget - Open-Meteo API (free, no key required)
+  // Lambunao, Iloilo coordinates
+  const LAT = 11.0522;
+  const LON = 122.4869;
+
+  const WMO_CODES = {
+    0:  { label: 'Clear sky', icon: 'bi-sun' },
+    1:  { label: 'Mainly clear', icon: 'bi-sun' },
+    2:  { label: 'Partly cloudy', icon: 'bi-cloud-sun' },
+    3:  { label: 'Overcast', icon: 'bi-cloud' },
+    45: { label: 'Foggy', icon: 'bi-cloud-haze' },
+    48: { label: 'Foggy', icon: 'bi-cloud-haze' },
+    51: { label: 'Light drizzle', icon: 'bi-cloud-drizzle' },
+    53: { label: 'Drizzle', icon: 'bi-cloud-drizzle' },
+    55: { label: 'Heavy drizzle', icon: 'bi-cloud-drizzle' },
+    56: { label: 'Freezing drizzle', icon: 'bi-cloud-sleet' },
+    57: { label: 'Freezing drizzle', icon: 'bi-cloud-sleet' },
+    61: { label: 'Light rain', icon: 'bi-cloud-rain' },
+    63: { label: 'Rain', icon: 'bi-cloud-rain' },
+    65: { label: 'Heavy rain', icon: 'bi-cloud-rain-heavy' },
+    66: { label: 'Freezing rain', icon: 'bi-cloud-sleet' },
+    67: { label: 'Freezing rain', icon: 'bi-cloud-sleet' },
+    71: { label: 'Light snow', icon: 'bi-snow' },
+    73: { label: 'Snow', icon: 'bi-snow' },
+    75: { label: 'Heavy snow', icon: 'bi-snow2' },
+    77: { label: 'Snow grains', icon: 'bi-snow' },
+    80: { label: 'Rain showers', icon: 'bi-cloud-rain' },
+    81: { label: 'Rain showers', icon: 'bi-cloud-rain' },
+    82: { label: 'Heavy showers', icon: 'bi-cloud-lightning-rain' },
+    85: { label: 'Snow showers', icon: 'bi-snow' },
+    86: { label: 'Snow showers', icon: 'bi-snow2' },
+    95: { label: 'Thunderstorm', icon: 'bi-lightning' },
+    96: { label: 'Thunderstorm & hail', icon: 'bi-lightning' },
+    99: { label: 'Thunderstorm & hail', icon: 'bi-lightning' }
+  };
+
+  async function loadWeather() {
+    const card = document.getElementById('weatherCard');
+    try {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current_weather=true&hourly=relative_humidity_2m&timezone=Asia%2FManila`;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Weather API error');
+      const data = await response.json();
+
+      const current = data.current_weather;
+      const wmo = WMO_CODES[current.weathercode] || { label: 'Unknown', icon: 'bi-question-circle' };
+
+      // Get current hour humidity from hourly data
+      const now = new Date();
+      const hourIndex = now.getHours();
+      const humidity = data.hourly.relative_humidity_2m[hourIndex] || '--';
+
+      card.innerHTML = `
+        <div class="location"><i class="bi bi-geo-alt-fill"></i> Lambunao, Iloilo</div>
+        <div class="text-center">
+          <div class="weather-icon"><i class="bi ${wmo.icon}"></i></div>
+          <div class="temp">${Math.round(current.temperature)}°C</div>
+          <div class="condition">${wmo.label}</div>
+        </div>
+        <div class="weather-details">
+          <div><i class="bi bi-droplet-fill"></i> ${humidity}%</div>
+          <div><i class="bi bi-wind"></i> ${current.windspeed} km/h</div>
+        </div>
+      `;
+    } catch (err) {
+      console.error('Weather load failed:', err);
+      card.innerHTML = `
+        <div class="weather-error">
+          <i class="bi bi-cloud-slash" style="font-size:1.5rem;"></i>
+          <div class="mt-2">Weather unavailable</div>
+        </div>
+      `;
+    }
+  }
+
+  // Load weather on page load
+  loadWeather();
+</script>
+</body>
+</html>
+

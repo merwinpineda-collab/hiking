@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard – WilderPath</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --accent:       #2e7d32;
+      --accent-mid:   #43a047;
+      --accent-light: #a5d6a7;
+      --accent-pale:  #e8f5e9;
+      --dark:         #1b5e20;
+    }
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)),
+                  url('../bggg.avif') center/cover no-repeat fixed;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      padding-bottom: 50px;
+      color: var(--dark);
+    }
+
+    nav {
+      background: rgba(46,125,50,.93);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0,0,0,.2);
+    }
+    nav a.nav-link, nav .navbar-brand { color: #e8f5e9 !important; font-weight: 500; }
+    nav a.nav-link:hover, nav a.nav-link.active { color: var(--accent-light) !important; }
+    nav .navbar-brand i { color: #c5e1a5; }
+    .dropdown-menu { background: rgba(46,125,50,.95); border: none; border-radius: 12px; }
+    .dropdown-item { color: #e8f5e9 !important; font-weight: 500; border-radius: 8px; margin: 2px 8px; width: auto; }
+    .dropdown-item:hover { background: rgba(255,255,255,.15); color: #fff !important; }
+
+    .hero {
+      height: 300px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: #fff;
+      text-align: center;
+      text-shadow: 1px 1px 6px rgba(0,0,0,.6);
+      font-weight: 800;
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin: 1rem;
+      background: url('../1.jpg') center/cover;
+      box-shadow: 0 10px 35px rgba(0,0,0,.25);
+    }
+    .hero p { font-size: .95rem; font-weight: 400; opacity: .9; margin-top: .4rem; }
+
+    main.container {
+      background: rgba(255,255,255,.97);
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.15);
+      padding: 2.5rem;
+      max-width: 1140px;
+      width: 100%;
+      color: var(--dark);
+    }
+
+    .section-heading {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      margin-bottom: 1.4rem;
+      padding-bottom: .6rem;
+      border-bottom: 2px solid var(--accent-pale);
+    }
+    .section-heading i { color: var(--accent); font-size: 1.4rem; }
+
+    /* ── ANALYTICS GRID ── */
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.3rem;
+      margin-bottom: 2.8rem;
+    }
+
+    .stat-card {
+      border-radius: 18px;
+      padding: 1.6rem 1.4rem;
+      color: #fff;
+      box-shadow: 0 8px 28px rgba(0,0,0,.13);
+      transition: transform .28s ease, box-shadow .28s ease;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: -50px; right: -50px;
+      width: 130px; height: 130px;
+      background: rgba(255,255,255,.12);
+      border-radius: 50%;
+    }
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      bottom: -30px; left: -30px;
+      width: 90px; height: 90px;
+      background: rgba(255,255,255,.08);
+      border-radius: 50%;
+    }
+    .stat-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,.2); }
+
+    .stat-icon { font-size: 2rem; margin-bottom: .7rem; opacity: .95; position: relative; z-index: 1; }
+    .stat-label { font-size: .78rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; opacity: .88; margin-bottom: .3rem; position: relative; z-index: 1; }
+    .stat-value { font-size: 2.6rem; font-weight: 800; line-height: 1; position: relative; z-index: 1; }
+    .stat-value.loading { font-size: 1.5rem; opacity: .7; }
+    .stat-sub { font-size: .78rem; opacity: .82; margin-top: .5rem; position: relative; z-index: 1; }
+
+    .card-users   { background: linear-gradient(135deg, #43a047, #1b5e20); }
+    .card-res     { background: linear-gradient(135deg, #1e88e5, #0d47a1); }
+    .card-guides  { background: linear-gradient(135deg, #fb8c00, #bf360c); }
+    .card-stc     { background: linear-gradient(135deg, #8e24aa, #4a148c); }
+    .card-walkin  { background: linear-gradient(135deg, #00acc1, #006064); }
+
+    .retry-btn {
+      background: rgba(255,255,255,.2);
+      border: 1px solid rgba(255,255,255,.4);
+      color: #fff;
+      border-radius: 8px;
+      padding: .3rem .8rem;
+      font-size: .75rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      transition: background .2s;
+      margin-top: .5rem;
+      position: relative; z-index: 1;
+    }
+    .retry-btn:hover { background: rgba(255,255,255,.3); }
+
+    /* ── CHARTS ── */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.8rem;
+    }
+    .chart-card {
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid var(--accent-pale);
+      box-shadow: 0 4px 16px rgba(0,0,0,.06);
+      padding: 1.5rem;
+    }
+    .chart-card h6 {
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 1rem;
+      font-size: .88rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+    .chart-card h6 i { color: var(--accent); }
+    .chart-wrap {
+      position: relative;
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .chart-wrap canvas { max-height: 220px; }
+    .chart-placeholder {
+      text-align: center;
+      color: #aaa;
+      font-size: .85rem;
+    }
+
+    /* ── GALLERY ── */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 2rem;
+    }
+    .gallery img {
+      width: 100%; height: 180px;
+      object-fit: cover;
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,.1);
+      transition: transform .3s ease, box-shadow .3s ease;
+      cursor: pointer;
+    }
+    .gallery img:hover { transform: scale(1.05); box-shadow: 0 10px 28px rgba(46,125,50,.35); }
+
+    /* ── INFO LISTS ── */
+    .info-list { list-style: none; padding: 0; margin: 0; }
+    .info-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: .6rem;
+      padding: .55rem 0;
+      border-bottom: 1px solid var(--accent-pale);
+      font-size: .9rem;
+      font-weight: 500;
+      color: #444;
+    }
+    .info-list li:last-child { border: none; }
+    .info-list li i { color: var(--accent); font-size: 1rem; margin-top: .1rem; flex-shrink: 0; }
+    .info-list strong { color: var(--dark); }
+
+    /* ── AUTO-REFRESH BADGE ── */
+    .refresh-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      background: var(--accent-pale);
+      color: var(--accent);
+      border-radius: 50px;
+      padding: .25rem .75rem;
+      font-size: .72rem;
+      font-weight: 600;
+      margin-left: auto;
+    }
+
+    footer {
+      background: rgba(46,125,50,.9);
+      color: #dcedc8;
+      padding: 14px;
+      border-radius: 12px;
+      text-align: center;
+      margin: 1rem;
+      font-size: .85rem;
+    }
+
+    /* ── MONTHLY TREND SECTION ── */
+    .trend-section {
+      background: #fff;
+      border-radius: 20px;
+      border: 1px solid var(--accent-pale);
+      box-shadow: 0 6px 24px rgba(0,0,0,.07);
+      padding: 1.8rem 2rem 2rem;
+      margin-bottom: 2.8rem;
+    }
+    .trend-header {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .8rem;
+      margin-bottom: 1.4rem;
+    }
+    .trend-header h6 {
+      font-weight: 700;
+      color: var(--dark);
+      font-size: .9rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+    .trend-header h6 i { color: var(--accent); }
+    .trend-controls {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      margin-left: auto;
+      flex-wrap: wrap;
+    }
+    .trend-year-btn {
+      background: var(--accent-pale);
+      border: 1.5px solid var(--accent-light);
+      color: var(--dark);
+      border-radius: 8px;
+      padding: .28rem .7rem;
+      font-size: .8rem;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: background .2s, border-color .2s;
+    }
+    .trend-year-btn.active,
+    .trend-year-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .trend-stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: .9rem;
+      margin-bottom: 1.4rem;
+    }
+    .trend-stat {
+      background: var(--accent-pale);
+      border-radius: 12px;
+      padding: .8rem 1rem;
+      text-align: center;
+    }
+    .trend-stat-label {
+      font-size: .7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--accent);
+      margin-bottom: .25rem;
+    }
+    .trend-stat-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--dark);
+      line-height: 1;
+    }
+    .trend-stat-sub {
+      font-size: .72rem;
+      color: #666;
+      margin-top: .2rem;
+    }
+    .trend-chart-wrap {
+      position: relative;
+      height: 300px;
+    }
+    .trend-chart-wrap canvas { max-height: 300px; }
+    .trend-legend {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+      font-size: .78rem;
+      font-weight: 500;
+      color: #555;
+    }
+    .trend-legend-dot {
+      width: 12px; height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+      margin-right: .3rem;
+      vertical-align: middle;
+    }
+
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .spin { display: inline-block; animation: spin 1s linear infinite; }
+
+    @media (max-width: 576px) {
+      main.container { padding: 1.5rem 1.2rem; }
+      .hero { font-size: 1.8rem; height: 230px; margin: .6rem; }
+      .stat-value { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="admindashboard.html">
+        <i class="bi bi-tree-fill me-2"></i>WilderPath Admin
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" href="admindashboard.html">Homepage</a></li>
+          <li class="nav-item"><a class="nav-link" href="adminbooking.html">Booking Info</a></li>
+          <li class="nav-item"><a class="nav-link" href="adminreservation.html">Reservations</a></li>
+          <li class="nav-item"><a class="nav-link" href="adminguides.html">Manage Guides</a></li>
+          <li class="nav-item"><a class="nav-link" href="adminwalkin.html">Walk-in</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero" aria-label="Admin Dashboard Welcome">
+    <span>Admin Dashboard</span>
+    <p>Overview of your WilderPath system</p>
+  </section>
+
+  <main class="container my-4" role="main">
+
+    <!-- ── ANALYTICS STAT CARDS ── -->
+    <div class="section-heading">
+      <i class="bi bi-speedometer2"></i> Dashboard Overview
+      <span class="refresh-badge ms-auto"><i class="bi bi-arrow-repeat spin" id="refreshIcon" style="animation:none"></i> Auto-refresh: 30s</span>
+    </div>
+
+    <div class="analytics-grid" id="analyticsGrid">
+      <div class="stat-card card-users">
+        <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+        <div class="stat-label">Total Users</div>
+        <div class="stat-value loading" id="totalUsers"><i class="bi bi-arrow-repeat spin"></i></div>
+        <div class="stat-sub">Registered hikers</div>
+      </div>
+      <div class="stat-card card-res">
+        <div class="stat-icon"><i class="bi bi-calendar-check-fill"></i></div>
+        <div class="stat-label">Reservations This Month</div>
+        <div class="stat-value loading" id="resMonth"><i class="bi bi-arrow-repeat spin"></i></div>
+        <div class="stat-sub" id="resMonthLabel">Current month</div>
+      </div>
+      <div class="stat-card card-guides">
+        <div class="stat-icon"><i class="bi bi-person-badge-fill"></i></div>
+        <div class="stat-label">Active Guides</div>
+        <div class="stat-value loading" id="activeGuides"><i class="bi bi-arrow-repeat spin"></i></div>
+        <div class="stat-sub">Tour guides registered</div>
+      </div>
+      <div class="stat-card card-stc">
+        <div class="stat-icon"><i class="bi bi-check-circle-fill"></i></div>
+        <div class="stat-label">Confirmed Bookings</div>
+        <div class="stat-value loading" id="stcCount"><i class="bi bi-arrow-repeat spin"></i></div>
+        <div class="stat-sub">Confirmed reservations</div>
+      </div>
+      <div class="stat-card card-walkin">
+        <div class="stat-icon"><i class="bi bi-person-walking"></i></div>
+        <div class="stat-label">Walk-in</div>
+        <div class="stat-value loading" id="walkinCount"><i class="bi bi-arrow-repeat spin"></i></div>
+        <div class="stat-sub">Today's walk-ins</div>
+      </div>
+    </div>
+
+    <!-- ── PIE CHARTS ── -->
+    <div class="section-heading"><i class="bi bi-pie-chart-fill"></i> Descriptive Analytics</div>
+
+    <div class="charts-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); max-width: 680px;">
+      <!-- Booking Type Chart -->
+      <div class="chart-card">
+        <h6><i class="bi bi-bar-chart-fill"></i> Booking Type Distribution</h6>
+        <div class="chart-wrap">
+          <canvas id="bookingTypeChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Status Chart -->
+      <div class="chart-card">
+        <h6><i class="bi bi-circle-half"></i> Booking Status Overview</h6>
+        <div class="chart-wrap">
+          <canvas id="bookingStatusChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MONTHLY TREND (Full-Width) ── -->
+    <div class="section-heading"><i class="bi bi-graph-up-arrow"></i> Monthly Reservation Trend</div>
+
+    <div class="trend-section">
+      <div class="trend-header">
+        <h6><i class="bi bi-bar-chart-steps"></i> Reservations per Month</h6>
+        <div class="trend-controls">
+          <span style="font-size:.78rem;font-weight:600;color:#777;">View Year:</span>
+          <button class="trend-year-btn" id="btnPrevYear" onclick="shiftTrendYear(-1)"><i class="bi bi-chevron-left"></i></button>
+          <span id="trendYearLabel" style="font-size:.88rem;font-weight:700;color:var(--dark);min-width:42px;text-align:center">—</span>
+          <button class="trend-year-btn" id="btnNextYear" onclick="shiftTrendYear(1)"><i class="bi bi-chevron-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Summary Stats -->
+      <div class="trend-stats-row">
+        <div class="trend-stat">
+          <div class="trend-stat-label">Total This Year</div>
+          <div class="trend-stat-value" id="trendTotal">—</div>
+          <div class="trend-stat-sub">reservations</div>
+        </div>
+        <div class="trend-stat">
+          <div class="trend-stat-label">Busiest Month</div>
+          <div class="trend-stat-value" id="trendPeak">—</div>
+          <div class="trend-stat-sub" id="trendPeakMonth">bookings</div>
+        </div>
+        <div class="trend-stat">
+          <div class="trend-stat-label">Monthly Average</div>
+          <div class="trend-stat-value" id="trendAvg">—</div>
+          <div class="trend-stat-sub">per month</div>
+        </div>
+        <div class="trend-stat">
+          <div class="trend-stat-label">Quietest Month</div>
+          <div class="trend-stat-value" id="trendMin">—</div>
+          <div class="trend-stat-sub" id="trendMinMonth">bookings</div>
+        </div>
+      </div>
+
+      <!-- Bar Chart -->
+      <div class="trend-chart-wrap">
+        <canvas id="monthlyTrendChart"></canvas>
+      </div>
+      <div class="trend-legend">
+        <span><span class="trend-legend-dot" style="background:linear-gradient(to top,#43a047,#81c784)"></span> Reservations</span>
+        <span id="trendAboveAvgNote" style="display:none"><span class="trend-legend-dot" style="background:#1b5e20"></span> Above average</span>
+      </div>
+    </div>
+
+    <!-- ── GALLERY ── -->
+    <div class="section-heading"><i class="bi bi-images"></i> Hiking Spot Gallery</div>
+    <div class="gallery" role="list" style="margin-bottom:2.8rem">
+      <img src="../1.jpg" alt="Trail 1" role="listitem">
+      <img src="../2.jpg" alt="Trail 2" role="listitem">
+      <img src="../4.jpg" alt="Trail 3" role="listitem">
+      <img src="../5.jpg" alt="Trail 4" role="listitem">
+    </div>
+
+    <!-- ── INFO ROW ── -->
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="section-heading"><i class="bi bi-clock-fill"></i> Operating Hours</div>
+        <ul class="info-list">
+          <li><i class="bi bi-calendar-week"></i> <span>Monday – Sunday &nbsp;<strong>6:00 AM – 6:00 PM</strong></span></li>
+          <li><i class="bi bi-cloud-lightning-rain-fill"></i> <span>Closed during severe weather conditions</span></li>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <div class="section-heading"><i class="bi bi-shield-check"></i> Quick Safety Tips</div>
+        <ul class="info-list">
+          <li><i class="bi bi-droplet-fill"></i> Bring water, snacks, and sun protection.</li>
+          <li><i class="bi bi-boot-fill"></i> Wear proper footwear.</li>
+          <li><i class="bi bi-megaphone-fill"></i> Inform staff before starting your hike.</li>
+          <li><i class="bi bi-telephone-fill"></i> Emergency Hotline: <strong>+63 912 345 6789</strong></li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>&copy; 2025 WilderPath Admin | All Rights Reserved</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/jquery.js"></script>
+  <script>
+    const MONTH_NAMES = ['January','February','March','April','May','June',
+                         'July','August','September','October','November','December'];
+
+    let bookingTypeChartInst = null;
+    let bookingStatusChartInst = null;
+    let monthlyTrendChartInst  = null;
+    let refreshTimer = null;
+    let countdown = 30;
+
+    /* ── LOAD ALL ANALYTICS ── */
+    function loadAnalytics() {
+      const refreshIcon = document.getElementById('refreshIcon');
+      refreshIcon.style.animation = 'spin 1s linear infinite';
+
+      ['totalUsers','resMonth','activeGuides','stcCount','walkinCount'].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el.className.indexOf('loading') === -1) {
+          // keep value visible but mark refreshing
+        }
+      });
+
+      $.ajax({
+        url: '../php/analytics.php',
+        type: 'GET',
+        dataType: 'json',
+        timeout: 10000,
+        success: function(res) {
+          refreshIcon.style.animation = 'none';
+          if (res && res.status === 'success') {
+            const d = res.data;
+            setValue('totalUsers',   d.total_users);
+            setValue('resMonth',     d.reservations_this_month);
+            setValue('activeGuides', d.active_guides);
+            setValue('stcCount',     d.stc_count);
+            setValue('walkinCount',  d.walkin_count || 0);
+
+            const now = new Date();
+            document.getElementById('resMonthLabel').textContent =
+              MONTH_NAMES[now.getMonth()] + ' ' + now.getFullYear();
+
+            // Build charts
+            renderBookingTypeChart(d.online_count || 0, d.walkin_count_total || 0);
+            renderBookingStatusChart(
+              d.confirmed_count || 0,
+              d.pending_count || 0,
+              d.cancelled_count || 0
+            );
+            if (d.monthly_trend) renderMonthlyTrendChart(d.monthly_trend);
+
+          } else {
+            showAnalyticsError(res ? res.message : null);
+          }
+        },
+        error: function(xhr, status) {
+          refreshIcon.style.animation = 'none';
+          console.error('Analytics request failed:', status, xhr.responseText);
+          // Render demo charts so UI isn't empty
+          renderBookingTypeChart(72, 28);
+          renderBookingStatusChart(45, 30, 5);
+          renderMonthlyTrendChart(null);
+          showAnalyticsError('Could not reach the server. Showing demo data.');
+        }
+      });
+    }
+
+    /* ── COUNT-UP ANIMATION ── */
+    function setValue(id, val) {
+      const el = document.getElementById(id);
+      el.className = 'stat-value';
+      const target = parseInt(val) || 0;
+      let current = 0;
+      const step = Math.max(1, Math.ceil(target / 40));
+      const timer = setInterval(function() {
+        current = Math.min(current + step, target);
+        el.textContent = current.toLocaleString();
+        if (current >= target) clearInterval(timer);
+      }, 30);
+    }
+
+    function showAnalyticsError(msg) {
+      ['totalUsers','resMonth','activeGuides','stcCount','walkinCount'].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el.textContent.trim() === '' || el.className.indexOf('loading') > -1) {
+          el.className = 'stat-value';
+          el.innerHTML = '<i class="bi bi-exclamation-triangle err-icon"></i>';
+        }
+      });
+      if (msg) console.warn('Analytics error:', msg);
+    }
+
+    /* ══════════════════════════════
+       PIE / DOUGHNUT CHARTS
+    ══════════════════════════════ */
+    const PIE_DEFAULTS = {
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            font: { family: 'Poppins', size: 12 },
+            padding: 14,
+            usePointStyle: true
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              const total = ctx.dataset.data.reduce((a,b) => a+b, 0);
+              const pct = total > 0 ? Math.round(ctx.parsed / total * 100) : 0;
+              return ` ${ctx.label}: ${ctx.parsed} (${pct}%)`;
+            }
+          }
+        }
+      }
+    };
+
+    function renderBookingTypeChart(online, walkin) {
+      const ctx = document.getElementById('bookingTypeChart').getContext('2d');
+      if (bookingTypeChartInst) bookingTypeChartInst.destroy();
+      bookingTypeChartInst = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Online Bookings', 'Walk-in Bookings'],
+          datasets: [{
+            data: [online, walkin],
+            backgroundColor: ['#43a047','#00acc1'],
+            borderColor: ['#fff','#fff'],
+            borderWidth: 3,
+            hoverOffset: 8
+          }]
+        },
+        options: {
+          ...PIE_DEFAULTS,
+          cutout: '62%',
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+    }
+
+    function renderBookingStatusChart(confirmed, pending, cancelled) {
+      const ctx = document.getElementById('bookingStatusChart').getContext('2d');
+      if (bookingStatusChartInst) bookingStatusChartInst.destroy();
+      bookingStatusChartInst = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Confirmed', 'Pending', 'Cancelled'],
+          datasets: [{
+            data: [confirmed, pending, cancelled],
+            backgroundColor: ['#2e7d32','#fb8c00','#d32f2f'],
+            borderColor: ['#fff','#fff','#fff'],
+            borderWidth: 3,
+            hoverOffset: 8
+          }]
+        },
+        options: {
+          ...PIE_DEFAULTS,
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+    }
+
+    // ── MONTHLY TREND STATE ──
+    let allMonthlyData = null;   // raw data from server keyed by year-month
+    let trendYear = new Date().getFullYear();
+
+    function shiftTrendYear(delta) {
+      trendYear += delta;
+      renderMonthlyTrendChart(allMonthlyData);
+    }
+
+    function renderMonthlyTrendChart(monthlyData) {
+      allMonthlyData = monthlyData; // cache for year switching
+
+      const now = new Date();
+      const currentYear = now.getFullYear();
+
+      // Build a full 12-month array for the selected year
+      const labels = MONTH_NAMES.map(function(m) { return m.substring(0, 3); });
+      const values = new Array(12).fill(0);
+
+      if (monthlyData && Array.isArray(monthlyData)) {
+        monthlyData.forEach(function(item) {
+          // item.month expected as "YYYY-MM" or "Mon YYYY" or just "Mon"
+          let itemYear = null, itemMonth = null;
+          if (typeof item.month === 'string') {
+            // Try "YYYY-MM"
+            const ymMatch = item.month.match(/^(\d{4})-(\d{2})$/);
+            if (ymMatch) {
+              itemYear  = parseInt(ymMatch[1]);
+              itemMonth = parseInt(ymMatch[2]) - 1; // 0-indexed
+            } else {
+              // Try "Jan 2024" or "January 2024"
+              const mNameMatch = item.month.match(/([A-Za-z]+)\s*(\d{4})?/);
+              if (mNameMatch) {
+                itemMonth = MONTH_NAMES.findIndex(function(mn) {
+                  return mn.toLowerCase().startsWith(mNameMatch[1].toLowerCase());
+                });
+                itemYear = mNameMatch[2] ? parseInt(mNameMatch[2]) : trendYear;
+              }
+            }
+          }
+          // Fallback: assume current trendYear if no year parsed
+          if (itemYear === null) itemYear = trendYear;
+          if (itemYear === trendYear && itemMonth !== null && itemMonth >= 0 && itemMonth < 12) {
+            values[itemMonth] = parseInt(item.count) || 0;
+          }
+        });
+      } else {
+        // Demo data
+        const demoBase = [12, 18, 15, 22, 19, 27, 31, 25, 20, 29, 17, 23];
+        for (let i = 0; i < 12; i++) {
+          // Only fill up to current month if showing current year
+          if (trendYear < currentYear || i <= now.getMonth()) {
+            values[i] = demoBase[i];
+          }
+        }
+      }
+
+      // Update year label & navigation buttons
+      document.getElementById('trendYearLabel').textContent = trendYear;
+      document.getElementById('btnNextYear').disabled = (trendYear >= currentYear);
+      document.getElementById('btnNextYear').style.opacity = (trendYear >= currentYear) ? '.4' : '1';
+
+      // Summary stats
+      const nonZero = values.filter(function(v) { return v > 0; });
+      const total = values.reduce(function(a, b) { return a + b; }, 0);
+      const peakVal = nonZero.length ? Math.max.apply(null, values) : 0;
+      const minVal  = nonZero.length ? Math.min.apply(null, nonZero) : 0;
+      const avg     = nonZero.length ? Math.round(total / nonZero.length) : 0;
+      const peakIdx = peakVal > 0 ? values.indexOf(peakVal) : -1;
+      const minIdx  = minVal  > 0 ? values.indexOf(minVal)  : -1;
+
+      document.getElementById('trendTotal').textContent    = total.toLocaleString();
+      document.getElementById('trendPeak').textContent     = peakVal.toLocaleString();
+      document.getElementById('trendPeakMonth').textContent = peakIdx >= 0 ? MONTH_NAMES[peakIdx] : 'bookings';
+      document.getElementById('trendAvg').textContent      = avg.toLocaleString();
+      document.getElementById('trendMin').textContent      = minVal.toLocaleString();
+      document.getElementById('trendMinMonth').textContent  = minIdx >= 0 ? MONTH_NAMES[minIdx] : 'bookings';
+      document.getElementById('trendAboveAvgNote').style.display = avg > 0 ? 'inline' : 'none';
+
+      // Colour each bar: darker green if above average, lighter if at/below
+      const bgColors = values.map(function(v) {
+        return v > avg ? 'rgba(27,94,32,0.88)' : 'rgba(67,160,71,0.72)';
+      });
+      const borderColors = values.map(function(v) {
+        return v > avg ? '#1b5e20' : '#43a047';
+      });
+
+      // Render chart
+      const ctx = document.getElementById('monthlyTrendChart').getContext('2d');
+      if (monthlyTrendChartInst) monthlyTrendChartInst.destroy();
+
+      // Gradient fill plugin
+      const gradientPlugin = {
+        id: 'barGradient',
+        beforeDatasetsDraw: function(chart) {
+          const { ctx: c, chartArea: { top, bottom }, data } = chart;
+          chart.data.datasets.forEach(function(dataset, i) {
+            const meta = chart.getDatasetMeta(i);
+            meta.data.forEach(function(bar, index) {
+              const grad = c.createLinearGradient(0, top, 0, bottom);
+              const isDark = data.datasets[i].backgroundColor[index] === 'rgba(27,94,32,0.88)';
+              grad.addColorStop(0, isDark ? 'rgba(27,94,32,0.95)'  : 'rgba(67,160,71,0.9)');
+              grad.addColorStop(1, isDark ? 'rgba(46,125,50,0.55)' : 'rgba(165,214,167,0.5)');
+              bar.options.backgroundColor = grad;
+            });
+          });
+        }
+      };
+
+      monthlyTrendChartInst = new Chart(ctx, {
+        type: 'bar',
+        plugins: [gradientPlugin],
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Reservations',
+            data: values,
+            backgroundColor: bgColors,
+            borderColor: borderColors,
+            borderWidth: 2,
+            borderRadius: { topLeft: 8, topRight: 8 },
+            borderSkipped: false
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 700, easing: 'easeInOutQuart' },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: 'rgba(27,94,32,0.93)',
+              titleFont: { family: 'Poppins', size: 13, weight: '700' },
+              bodyFont: { family: 'Poppins', size: 12 },
+              padding: 12,
+              cornerRadius: 10,
+              callbacks: {
+                title: function(items) { return MONTH_NAMES[items[0].dataIndex] + ' ' + trendYear; },
+                label: function(ctx) {
+                  const v = ctx.parsed.y;
+                  const diff = v - avg;
+                  const sign = diff >= 0 ? '+' : '';
+                  return [
+                    '  Reservations: ' + v.toLocaleString(),
+                    avg > 0 ? ('  vs avg: ' + sign + diff) : ''
+                  ].filter(Boolean);
+                }
+              }
+            },
+            // Value labels on top of bars
+            datalabels: { display: false } // handled by afterDraw below
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              suggestedMax: peakVal ? Math.ceil(peakVal * 1.22) : 10,
+              ticks: {
+                font: { family: 'Poppins', size: 11 },
+                color: '#666',
+                stepSize: Math.max(1, Math.ceil(peakVal / 6))
+              },
+              grid: { color: 'rgba(0,0,0,.055)', drawBorder: false }
+            },
+            x: {
+              ticks: { font: { family: 'Poppins', size: 11, weight: '600' }, color: '#555' },
+              grid: { display: false },
+              border: { display: false }
+            }
+          }
+        }
+      });
+
+      // Draw value labels on bars after each render
+      monthlyTrendChartInst.options.animation.onComplete = function() {
+        const chart = monthlyTrendChartInst;
+        if (!chart) return;
+        const c = chart.ctx;
+        const meta = chart.getDatasetMeta(0);
+        c.save();
+        c.font = '600 11px Poppins, sans-serif';
+        c.textAlign = 'center';
+        c.textBaseline = 'bottom';
+        meta.data.forEach(function(bar, i) {
+          const v = chart.data.datasets[0].data[i];
+          if (v === 0) return;
+          c.fillStyle = v > avg ? '#1b5e20' : '#2e7d32';
+          c.fillText(v, bar.x, bar.y - 4);
+        });
+        // Average line label
+        if (avg > 0) {
+          const yScale = chart.scales.y;
+          const yPos = yScale.getPixelForValue(avg);
+          c.setLineDash([5, 4]);
+          c.strokeStyle = 'rgba(251,140,0,0.6)';
+          c.lineWidth = 1.5;
+          c.beginPath();
+          c.moveTo(chart.chartArea.left, yPos);
+          c.lineTo(chart.chartArea.right, yPos);
+          c.stroke();
+          c.setLineDash([]);
+          c.fillStyle = '#fb8c00';
+          c.font = '600 10px Poppins, sans-serif';
+          c.textBaseline = 'bottom';
+          c.textAlign = 'left';
+          c.fillText('avg ' + avg, chart.chartArea.left + 4, yPos - 3);
+        }
+        c.restore();
+      };
+      // Trigger it immediately
+      monthlyTrendChartInst.update();
+    }
+
+    /* ── AUTO-REFRESH COUNTDOWN ── */
+    function startAutoRefresh() {
+      countdown = 30;
+      clearInterval(refreshTimer);
+      refreshTimer = setInterval(function() {
+        countdown--;
+        const badge = document.querySelector('.refresh-badge');
+        if (badge) badge.innerHTML = `<i class="bi bi-arrow-repeat" id="refreshIcon"></i> Auto-refresh: ${countdown}s`;
+        if (countdown <= 0) {
+          loadAnalytics();
+          countdown = 30;
+          badge.innerHTML = `<i class="bi bi-arrow-repeat spin" id="refreshIcon"></i> Auto-refresh: ${countdown}s`;
+        }
+      }, 1000);
+    }
+
+    $(document).ready(function() {
+      loadAnalytics();
+      startAutoRefresh();
+    });
+  </script>
+</body>
+</html>

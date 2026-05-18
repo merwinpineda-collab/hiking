@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Tour Guides – WilderPath</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent:       #2e7d32;
+      --accent-mid:   #43a047;
+      --accent-light: #a5d6a7;
+      --accent-pale:  #e8f5e9;
+      --dark:         #1b5e20;
+      --text-body:    #33691e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)),
+                  url('../bggg.avif') center/cover no-repeat fixed;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 50px;
+      color: var(--text-body);
+    }
+
+    /* ── NAVBAR ────────────────────────────────── */
+    /* Navbar */
+    nav {
+      background: rgba(46, 125, 50, 0.9);
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      padding: 0.5rem 1rem;
+      margin-bottom: 2rem;
+    }
+    nav a.nav-link, nav .navbar-brand {
+      color: #dcedc8 !important;
+      font-weight: 500;
+    }
+    nav a.nav-link:hover,
+    nav a.nav-link.active {
+      color: var(--accent-light) !important;
+    }
+    
+    nav .navbar-brand i {
+      color: #c5e1a5;
+    }
+    /* ── HERO ──────────────────────────────────── */
+    /* .hero {
+      position: relative;
+      height: 340px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+      padding: 0 1rem;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg,
+        rgba(27,94,32,.75) 0%,
+        rgba(46,125,50,.55) 50%,
+        rgba(0,0,0,.4) 100%);
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: url('https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1600&q=80')
+                  center/cover no-repeat;
+      z-index: -1;
+    }
+    .hero-content { position: relative; z-index: 1; }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 800;
+      text-shadow: 0 2px 12px rgba(0,0,0,.5);
+      line-height: 1.1;
+    }
+    .hero p {
+      font-size: 1.05rem;
+      opacity: .9;
+      margin-top: .6rem;
+      max-width: 520px;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.35);
+      backdrop-filter: blur(6px);
+      border-radius: 50px;
+      padding: .35rem 1.1rem;
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: .8rem;
+      color: #c5e1a5;
+    } */
+
+    /* ── SEARCH BAR ────────────────────────────── */
+    .search-wrap {
+      max-width: 480px;
+      margin-left: 550px;
+      padding: 0 1rem;
+      position: relative;
+      z-index: 10;
+    }
+    .search-wrap input {
+      border-radius: 50px;
+      border: none;
+      padding: .75rem 1.4rem .75rem 3rem;
+      box-shadow: 0 6px 24px rgba(0,0,0,.18);
+      font-family: 'Poppins', sans-serif;
+      font-size: .93rem;
+      width: 100%;
+      background: #fff;
+      color: #333;
+      outline: none;
+      transition: box-shadow .25s;
+    }
+    .search-wrap input:focus { box-shadow: 0 6px 28px rgba(46,125,50,.3); }
+    .search-wrap .search-icon {
+      position: absolute;
+      left: 2rem; top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-size: 1.1rem;
+    }
+
+    /* ── MAIN CONTENT ──────────────────────────── */
+    .content-wrap {
+      max-width: 1200px;
+      width: 100%;
+      margin: 2.4rem auto 0;
+      padding: 0 1.2rem;
+    }
+
+    /* Stats strip */
+    .stats-strip {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .stat-pill {
+      background: rgba(255,255,255,.92);
+      border-radius: 50px;
+      padding: .55rem 1.2rem;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--accent);
+      box-shadow: 0 3px 12px rgba(0,0,0,.1);
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+    }
+    .stat-pill i { font-size: 1rem; color: var(--accent-mid); }
+
+    /* Section heading */
+    .section-heading {
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.35rem;
+      margin-bottom: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .section-heading::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,.25);
+      margin-left: .6rem;
+    }
+
+    /* Guide grid */
+    .guides-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Guide card */
+    .guide-card {
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0,0,0,.12);
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+    }
+    .guide-card:hover {
+      box-shadow: 0 18px 45px rgba(0,0,0,.18);
+    }
+
+    /* Card image */
+    .card-img-wrap {
+      position: relative;
+      height: 240px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .card-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+
+    }
+
+    .exp-badge {
+      position: absolute;
+      bottom: 10px; right: 10px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50px;
+      padding: .3rem .85rem;
+      font-size: .75rem;
+      font-weight: 700;
+      box-shadow: 0 3px 10px rgba(0,0,0,.25);
+    }
+    .gender-badge {
+      position: absolute;
+      top: 10px; left: 10px;
+      background: rgba(255,255,255,.9);
+      color: var(--accent);
+      border-radius: 50px;
+      padding: .25rem .75rem;
+      font-size: .72rem;
+      font-weight: 600;
+    }
+
+    /* Card body */
+    .card-body {
+      padding: 1.25rem 1.4rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .guide-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: .3rem;
+    }
+    .guide-spec {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      background: var(--accent-pale);
+      color: var(--accent);
+      border-radius: 50px;
+      padding: .25rem .85rem;
+      font-size: .76rem;
+      font-weight: 600;
+      margin-bottom: .75rem;
+      width: fit-content;
+    }
+    .guide-meta {
+      font-size: .82rem;
+      color: #555;
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+      margin-bottom: 1rem;
+    }
+    .guide-meta span { display: flex; align-items: center; gap: .4rem; }
+    .guide-meta i { color: var(--accent-mid); font-size: .9rem; width: 16px; }
+
+    .btn-details {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: .6rem 1.2rem;
+      font-size: .85rem;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: background .25s, transform .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .45rem;
+      margin-top: auto;
+      text-decoration: none;
+    }
+    .btn-details:hover { background: var(--dark); transform: translateY(-1px); color: #fff; }
+
+    /* Loading / empty states */
+    .state-box {
+      background: rgba(255,255,255,.92);
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      text-align: center;
+      color: #666;
+    }
+    .state-box i { font-size: 3rem; color: var(--accent-light); margin-bottom: 1rem; display: block; }
+    .spinner-border { color: var(--accent); width: 3rem; height: 3rem; margin-bottom: 1rem; }
+
+    /* ── DETAIL MODAL ──────────────────────────── */
+    .modal-content { border: none; border-radius: 20px; overflow: hidden; }
+    .modal-header { background: var(--accent); color: #fff; border: none; padding: 1.2rem 1.5rem; }
+    .modal-header .btn-close { filter: brightness(0) invert(1); }
+    .modal-title { font-weight: 700; font-size: 1.15rem; }
+
+    .modal-guide-img {
+      width: 30%; height: 260px;
+      border-radius: 50%;
+      object-fit: cover;
+      position: absolute; top: 30px; left: 60%;
+    }
+    .modal-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      border-radius: 50px;
+      padding: .3rem .9rem;
+      font-size: .78rem;
+      font-weight: 600;
+      margin: .25rem .2rem .25rem 0;
+    }
+    .modal-badge.green { background: var(--accent-pale); color: var(--accent); }
+    .modal-badge.blue  { background: #e3f2fd; color: #1565c0; }
+    .modal-badge.orange{ background: #fff3e0; color: #e65100; }
+
+    .info-row {
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+      padding: .65rem 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: .88rem;
+    }
+    .info-row:last-child { border: none; }
+    .info-row i { color: var(--accent); font-size: 1rem; width: 22px; flex-shrink: 0; margin-top: .05rem; }
+    .info-row .label { font-weight: 600; color: #444; min-width: 110px; }
+    .info-row .value { color: #333; }
+
+    /* ── FOOTER ────────────────────────────────── */
+    footer {
+      background: rgba(46,125,50,.9);
+      color: #dcedc8;
+      padding: 14px;
+      border-radius: 12px;
+      text-align: center;
+      margin-top: auto;
+      font-size: .85rem;
+    }
+
+    /* ── RESPONSIVE ────────────────────────────── */
+    @media (max-width: 576px) {
+      .hero { height: 280px; }
+      .guides-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="userdashboard.html">
+        <i class="bi bi-tree-fill me-2"></i>WilderPath
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="userdashboard.html">Homepage</a></li>
+          <li class="nav-item"><a class="nav-link" href="booking.html">Hike Information</a></li>
+          <li class="nav-item"><a class="nav-link active" href="userguides.html">Our Guides</a></li>
+          <li class="nav-item"><a class="nav-link" href="userreserve.html">Reservation</a></li>
+          <li class="nav-item"><a class="nav-link" href="viewreserve.html">My Reservations</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- SEARCH -->
+  <div class="search-wrap">
+    <i class="bi bi-search search-icon"></i>
+    <input type="text" id="searchInput" placeholder="Search by name or specialization…" oninput="filterGuides()">
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content-wrap">
+    <!-- Stats strip -->
+    <div class="stats-strip" id="statsStrip">
+      <div class="stat-pill"><i class="bi bi-people-fill"></i> <span id="statCount">–</span> Guides Available</div>
+      <div class="stat-pill"><i class="bi bi-star-fill"></i> Certified & Experienced</div>
+      <div class="stat-pill"><i class="bi bi-shield-check"></i> Safety First</div>
+    </div>
+
+    <div class="section-heading"><i class="bi bi-people-fill"></i> All Hiking Guides</div>
+
+    <!-- Grid -->
+    <div id="guidesGrid" class="guides-grid">
+      <!-- Loading state -->
+      <div class="state-box" id="loadingState" style="grid-column:1/-1">
+        <div class="spinner-border" role="status"></div>
+        <p>Loading guides…</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>© 2025 WilderPath | Guided by Experts &nbsp;•&nbsp; Stay Safe, Hike Smart</footer>
+
+  <!-- DETAIL MODAL -->
+  <div class="modal fade" id="detailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-person-badge me-2"></i>Guide Profile</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-0" id="modalBody">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/jquery.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let allGuides = [];
+
+    $(document).ready(function () {
+      loadGuides();
+    });
+
+    function loadGuides() {
+      $.get('../php/listguides.php?type=user')
+        .done(function (raw) {
+          let res;
+          try { res = typeof raw === 'string' ? JSON.parse(raw) : raw; }
+          catch (e) { showError('Invalid server response.'); return; }
+
+          if (res.status === 'success') {
+            allGuides = res.guides;
+            renderGuides(allGuides);
+            $('#statCount').text(allGuides.length);
+          } else {
+            showError(res.message || 'Could not load guides.');
+          }
+        })
+        .fail(function () { showError('Network error — please try again.'); });
+    }
+
+    function renderGuides(guides) {
+      const grid = $('#guidesGrid');
+      grid.empty();
+
+      if (!guides || guides.length === 0) {
+        grid.html(`
+          <div class="state-box" style="grid-column:1/-1">
+            <i class="bi bi-person-x"></i>
+            <p class="fw-semibold mb-1">No guides found</p>
+          </div>`);
+        return;
+      }
+
+      guides.forEach(function (g) {
+        const pic = g.profile_picture
+          ? '../assets/guides/' + g.profile_picture
+          : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(g.name) + '&background=2e7d32&color=fff&size=300';
+
+        const card = `
+          <div class="guide-card" onclick="showDetail(${g.guide_id})">
+            <div class="card-img-wrap">
+              <img src="${pic}" alt="${escHtml(g.name)}"
+                   onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(g.name)}&background=2e7d32&color=fff&size=300'">
+              <span class="exp-badge"><i class="bi bi-trophy-fill me-1"></i>${g.experience_years} yrs</span>
+              <span class="gender-badge"><i class="bi bi-person me-1"></i>${escHtml(g.gender || 'N/A')}</span>
+            </div>
+            <div class="card-body">
+              <div class="guide-name">${escHtml(g.name)}</div>
+              <div class="guide-spec"><i class="bi bi-geo-alt-fill"></i>${escHtml(g.specialization)}</div>
+              <div class="guide-meta">
+                <span><i class="bi bi-telephone-fill"></i>${escHtml(g.phone)}</span>
+                <span><i class="bi bi-envelope-fill"></i>${escHtml(g.email)}</span>
+                ${g.address ? `<span><i class="bi bi-pin-map-fill"></i>${escHtml(g.address)}</span>` : ''}
+              </div>
+              <button class="btn-details" onclick="event.stopPropagation(); showDetail(${g.guide_id})">
+                <i class="bi bi-eye"></i> View Full Profile
+              </button>
+            </div>
+          </div>`;
+        grid.append(card);
+      });
+    }
+
+    function filterGuides() {
+      const q = $('#searchInput').val().toLowerCase().trim();
+      if (!q) { renderGuides(allGuides); return; }
+      const filtered = allGuides.filter(g =>
+        g.name.toLowerCase().includes(q) ||
+        (g.specialization || '').toLowerCase().includes(q)
+      );
+      renderGuides(filtered);
+    }
+
+    function showDetail(id) {
+      const g = allGuides.find(x => x.guide_id == id);
+      if (!g) return;
+
+      const pic = g.profile_picture
+        ? '../assets/guides/' + g.profile_picture
+        : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(g.name) + '&background=2e7d32&color=fff&size=600';
+
+      const html = `
+        <img src="${pic}" class="modal-guide-img" alt="${escHtml(g.name)}"
+             onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(g.name)}&background=2e7d32&color=fff&size=600'">
+        <div class="p-4">
+          <h4 class="fw-800 mb-1" style="color:#1b5e20">${escHtml(g.name)}</h4>
+          <div class="mb-3">
+            <span class="modal-badge green"><i class="bi bi-geo-alt-fill"></i>${escHtml(g.specialization)}</span>
+            <span class="modal-badge blue"><i class="bi bi-trophy-fill"></i>${g.experience_years} yrs experience</span>
+            <span class="modal-badge orange"><i class="bi bi-person-fill"></i>${escHtml(g.gender || 'N/A')}, ${g.age} yrs old</span>
+          </div>
+          <div>
+            <div class="info-row">
+              <i class="bi bi-telephone-fill"></i>
+              <span class="label">Phone</span>
+              <span class="value">${escHtml(g.phone)}</span>
+            </div>
+            <div class="info-row">
+              <i class="bi bi-envelope-fill"></i>
+              <span class="label">Email</span>
+              <span class="value">${escHtml(g.email)}</span>
+            </div>
+            <div class="info-row">
+              <i class="bi bi-pin-map-fill"></i>
+              <span class="label">Address</span>
+              <span class="value">${escHtml(g.address || 'N/A')}</span>
+            </div>
+            ${g.contact_details ? `
+            <div class="info-row">
+              <i class="bi bi-card-text"></i>
+              <span class="label">Other Contact</span>
+              <span class="value">${escHtml(g.contact_details)}</span>
+            </div>` : ''}
+          </div>
+        </div>`;
+
+      $('#modalBody').html(html);
+      new bootstrap.Modal(document.getElementById('detailModal')).show();
+    }
+
+    function showError(msg) {
+      $('#guidesGrid').html(`
+        <div class="state-box" style="grid-column:1/-1">
+          <i class="bi bi-exclamation-circle text-danger"></i>
+          <p class="fw-semibold mb-1">Error loading guides</p>
+          <p class="small text-muted">${escHtml(msg)}</p>
+          <button class="btn btn-sm btn-success mt-2" onclick="loadGuides()">Retry</button>
+        </div>`);
+    }
+
+    function escHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TrailMate – Reservation</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link rel="stylesheet" href="bootstrap-5.3.8-dist/bootstrap-5.3.8-dist/css/bootstrap.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+    :root {
+      --accent: #2e7d32;
+      --accent-light: #a5d6a7;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                  url('../bggg.avif') center/cover no-repeat;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      padding-bottom: 40px;
+      color: #33691e;
+    }
+    /* Navbar */
+    nav {
+      background: rgba(46, 125, 50, 0.9);
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      padding: 0.5rem 1rem;
+      margin-bottom: 2rem;
+    }
+    nav a.nav-link, nav .navbar-brand {
+      color: #dcedc8 !important;
+      font-weight: 500;
+    }
+    nav a.nav-link:hover,
+    nav a.nav-link.active {
+      color: var(--accent-light) !important;
+    }
+    
+    nav .navbar-brand i {
+      color: #c5e1a5;
+    }
+    /* Hero */
+    .hero {
+      background: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #f1f8e9;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+      font-weight: 700;
+      font-size: 3rem;
+      margin: 0 1rem 3rem 1rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(46, 125, 50, 0.4);
+    }
+
+    /* Reservation Section */
+    .reservation-section {
+      display: flex;
+      justify-content: center;
+      padding: 0 1rem;
+    }
+
+    .reservation-card {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      padding: 40px 30px;
+      width: 100%;
+      max-width: 700px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .reservation-card h3 {
+      color: var(--accent);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.8rem;
+    }
+
+    .reservation-card p {
+      text-align: center;
+      color: #388e3c;
+      font-weight: 500;
+      margin-bottom: 2rem;
+    }
+
+    label {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .form-control, .form-select, textarea {
+      border-radius: 12px !important;
+      border: 2px solid #c8e6c9;
+      padding: 0.7rem 1rem;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 8px var(--accent-light);
+      outline: none;
+    }
+
+    .invalid-feedback {
+      font-size: 0.9rem;
+      color: #c62828;
+      font-weight: 500;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      border: none;
+      padding: 0.65rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 12px rgba(46, 125, 50, 0.3);
+      width: 170px;
+    }
+
+    .btn-primary:hover {
+      background-color: #1b5e20;
+      box-shadow: 0 8px 20px rgba(27, 94, 32, 0.6);
+    }
+
+    .btn-outline-secondary {
+      border-radius: 12px;
+      font-weight: 600;
+      width: 110px;
+    }
+
+    footer {
+      background: rgba(46,125,50,0.9);
+      color: #dcedc8;
+      padding: 3px;
+      border-radius: 12px;
+      text-align: center;
+      margin-top: 100px;
+    }
+
+    /* ── Locked / auto-filled field styling ── */
+    .field-locked {
+      position: relative;
+    }
+    .field-locked .form-control[readonly] {
+      background-color: #f1f8e9;
+      border-color: #a5d6a7;
+      color: #2e7d32;
+      font-weight: 600;
+      cursor: not-allowed;
+      padding-right: 2.8rem; /* room for the lock icon */
+    }
+    .field-locked .lock-icon {
+      position: absolute;
+      right: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #66bb6a;
+      font-size: 0.95rem;
+      pointer-events: none;
+    }
+    /* badge that appears under locked fields */
+    .auto-filled-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.75rem;
+      color: #388e3c;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+    .auto-filled-badge i { font-size: 0.7rem; }
+
+    /* ── Skeleton loading pulse ── */
+    .skeleton {
+      background: linear-gradient(90deg, #e8f5e9 25%, #c8e6c9 50%, #e8f5e9 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 12px !important;
+      color: transparent !important;
+      pointer-events: none;
+      user-select: none;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ── Alert banners ── */
+    .profile-alert {
+      border-radius: 12px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.65rem 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .profile-alert.success {
+      background: #e8f5e9;
+      border: 1px solid #a5d6a7;
+      color: #2e7d32;
+    }
+    .profile-alert.error {
+      background: #ffebee;
+      border: 1px solid #ef9a9a;
+      color: #c62828;
+    }
+    .profile-alert.warning {
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      color: #f57f17;
+    }
+
+    /* ── Redirect overlay (unauthenticated) ── */
+    #authOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    #authOverlay.show { display: flex; }
+    .auth-box {
+      background: #fff;
+      border-radius: 16px;
+      padding: 2rem 2.5rem;
+      text-align: center;
+      max-width: 360px;
+      width: 90%;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.25);
+    }
+    .auth-box i { font-size: 2.5rem; color: #e53935; margin-bottom: 0.75rem; }
+    .auth-box h5 { color: #2e7d32; font-weight: 700; }
+    .auth-box p  { font-size: 0.9rem; color: #555; }
+    .auth-box .btn { border-radius: 10px; font-weight: 600; background: #2e7d32; border: none; }
+
+    @media (max-width: 576px) {
+      .hero {
+        font-size: 2rem;
+        height: 220px;
+      }
+      .reservation-card {
+        padding: 25px 20px;
+        margin-top: 20px;
+      }
+      .btn-primary, .btn-outline-secondary {
+        width: 100%;
+        margin-bottom: 0.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Auth Guard Overlay (shown when no session found) -->
+  <div id="authOverlay" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <div class="auth-box">
+      <i class="bi bi-shield-lock-fill"></i>
+      <h5 id="authTitle">Session Required</h5>
+      <p>You need to be logged in to make a reservation. Redirecting you to the login page…</p>
+      <a href="../index.html" class="btn btn-success text-white mt-1 px-4">Go to Login</a>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#"><i class="bi bi-tree-fill me-2"></i>WilderPath</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="userdashboard.html">Homepage</a></li>
+          <li class="nav-item"><a class="nav-link" href="booking.html">Hike Information</a></li>
+          <li class="nav-item"><a class="nav-link" href="userguides.html">Our Guides</a></li>
+          <li class="nav-item"><a class="nav-link active" href="userreserve.html">Reservation</a></li>
+          <li class="nav-item"><a class="nav-link" href="viewreserve.html">My Reservations</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Reservation Form -->
+  <section class="reservation-section " aria-label="Hiking Reservation Form">
+    <div class="reservation-card" class="mt-5"role="form">
+      <h3>Book Your Hike</h3>
+      <p>Fill in your details below to reserve your trail experience.</p>
+
+      <!-- Profile-fetch status banner (injected by JS) -->
+      <div id="profileAlert"></div>
+
+      <form id="reservationForm" class="needs-validation" novalidate onsubmit="submitReservation(event)">
+
+        <!-- Full Name – auto-populated, locked -->
+        <div class="mb-3">
+          <label for="r-name" class="form-label">
+            Full Name
+          </label>
+          <div class="field-locked">
+            <input
+              type="text"
+              class="form-control skeleton"
+              id="r-name"
+              placeholder="Loading…"
+              required
+              readonly
+              autocomplete="off"
+            />
+            <i class="bi bi-lock-fill lock-icon" title="Auto-filled from your account"></i>
+          </div>
+          <span class="auto-filled-badge" id="name-badge" style="display:none;">
+            <i class="bi bi-check-circle-fill"></i> Auto-filled from your account
+          </span>
+          <div class="invalid-feedback">Your name could not be loaded. Please refresh.</div>
+        </div>
+
+        <!-- Email – auto-populated, locked -->
+        <div class="mb-3">
+          <label for="r-email" class="form-label">
+            Email
+          </label>
+          <div class="field-locked">
+            <input
+              type="email"
+              class="form-control skeleton"
+              id="r-email"
+              placeholder="Loading…"
+              required
+              readonly
+              autocomplete="off"
+            />
+            <i class="bi bi-lock-fill lock-icon" title="Auto-filled from your account"></i>
+          </div>
+          <span class="auto-filled-badge" id="email-badge" style="display:none;">
+            <i class="bi bi-check-circle-fill"></i> Auto-filled from your account
+          </span>
+          <div class="invalid-feedback">Your email could not be loaded. Please refresh.</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="r-phone" class="form-label">Phone Number</label>
+          <input type="tel" class="form-control" id="r-phone" required />
+          <div class="invalid-feedback">Please provide a contact number.</div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="r-people" class="form-label">Number of People</label>
+            <input type="number" min="1" class="form-control" id="r-people" value="1" required />
+            <div class="invalid-feedback">Enter number of people.</div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="r-date" class="form-label">Date</label>
+            <input type="date" class="form-control" id="r-date" required />
+            <div class="invalid-feedback">Select a date.</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="r-time" class="form-label">Preferred Start Time</label>
+            <input type="time" class="form-control" id="r-time" required />
+            <div class="invalid-feedback">Pick a start time.</div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="r-difficulty" class="form-label">Trail Difficulty</label>
+            <select id="r-difficulty" class="form-select" required>
+              <option value="">Choose...</option>
+              <option>Easy</option>
+              <option>Moderate</option>
+              <option>Hard</option>
+            </select>
+            <div class="invalid-feedback">Select difficulty level.</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="r-notes" class="form-label">Special Requests / Notes</label>
+          <textarea class="form-control" id="r-notes" rows="2"></textarea>
+        </div>
+
+        <input type="hidden" name="status" value="pending">
+
+        <div class="text-center">
+          <button class="btn btn-primary" type="submit">Submit</button>
+          <button class="btn btn-outline-secondary ms-2" type="button" id="clearForm">Clear</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 TrailMate | All Rights Reserved</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="bootstrap-5.3.8-dist/bootstrap-5.3.8-dist/js/bootstrap.min.js"></script>
+  <script src="../js/jquery.js"></script>
+  <script src="index.js"></script>
+  <script>
+  /**
+   * Auto-populate Name & Email from the authenticated user's database record.
+   *
+   * Flow:
+   *  1. Read userEmail from localStorage (set at login).
+   *  2. If missing → show auth-guard overlay and redirect after 4 s.
+   *  3. POST to getuserprofile.php with the email as identifier.
+   *  4. On success → fill + lock the Name / Email fields.
+   *  5. On failure → show a user-friendly error banner; clear skeleton so
+   *     the form is not silently broken.
+   *
+   * The fields are kept readonly=true at the HTML level, but the JS also
+   * re-enforces this after fill so the attribute cannot be stripped via
+   * DevTools inspect without also clearing the value.
+   */
+  (function () {
+    'use strict';
+
+    /* ── helpers ── */
+    function showAlert(type, icon, message) {
+      document.getElementById('profileAlert').innerHTML =
+        `<div class="profile-alert ${type}">
+           <i class="bi ${icon}"></i> ${message}
+         </div>`;
+    }
+
+    function removeSkeleton(el) {
+      el.classList.remove('skeleton');
+      el.placeholder = '';
+    }
+
+    function fillLockedField(inputId, badgeId, value) {
+      const input = document.getElementById(inputId);
+      const badge = document.getElementById(badgeId);
+      removeSkeleton(input);
+      input.value = value;
+      input.setAttribute('readonly', 'readonly');           // re-enforce read-only
+      input.setAttribute('aria-label', input.labels[0]?.textContent?.trim() +
+                         ' – auto-filled, read-only');
+      if (badge) badge.style.display = 'inline-flex';
+    }
+
+    function showAuthOverlay() {
+      const overlay = document.getElementById('authOverlay');
+      overlay.classList.add('show');
+      // auto-redirect after 4 seconds
+      setTimeout(() => { window.location.href = '../index.html'; }, 4000);
+    }
+
+    /* ── prevent any attempt to un-readonly the fields via JS ── */
+    function guardFields() {
+      ['r-name', 'r-email'].forEach(function (id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        // MutationObserver: if readonly is removed, put it back
+        new MutationObserver(function () {
+          if (!el.hasAttribute('readonly')) {
+            el.setAttribute('readonly', 'readonly');
+          }
+        }).observe(el, { attributes: true, attributeFilter: ['readonly'] });
+      });
+    }
+
+    /* ── clear form button (only resets non-locked fields) ── */
+    function initClearButton() {
+      document.getElementById('clearForm')?.addEventListener('click', function () {
+        const form = document.getElementById('reservationForm');
+        // reset only non-readonly inputs
+        form.querySelectorAll('input:not([readonly]), select, textarea').forEach(function (el) {
+          if (el.type === 'number') { el.value = 1; }
+          else if (el.tagName === 'SELECT') { el.selectedIndex = 0; }
+          else { el.value = ''; }
+        });
+        form.classList.remove('was-validated');
+      });
+    }
+
+    /* ── main ── */
+    document.addEventListener('DOMContentLoaded', function () {
+      guardFields();
+      initClearButton();
+
+      // --- 1. Resolve stored identifier (email preferred, userId as fallback) ---
+      const storedEmail  = localStorage.getItem('userEmail')  ||
+                           sessionStorage.getItem('userEmail');
+      const storedUserId = localStorage.getItem('userId')     ||
+                           sessionStorage.getItem('userId');
+
+      if (!storedEmail && !storedUserId) {
+        showAuthOverlay();
+        return;
+      }
+
+      // --- 2. Fetch profile from server ---
+      const payload = storedEmail
+        ? { email: storedEmail }
+        : { user_id: storedUserId };
+
+      $.ajax({
+        url    : '../php/getuserprofile.php',
+        method : 'POST',
+        data   : payload,
+        timeout: 8000,   // 8 s timeout
+        success: function (raw) {
+          let res;
+          try { res = (typeof raw === 'object') ? raw : JSON.parse(raw); }
+          catch (e) {
+            handleFetchError('Server returned an unexpected response. Please refresh.');
+            return;
+          }
+
+          if (res && res.status === 'success' && res.data) {
+            const d = res.data;
+
+            // --- 3. Fill Name ---
+            const fullname = (d.fullname || d.full_name || d.name || '').trim();
+            if (fullname) {
+              fillLockedField('r-name', 'name-badge', fullname);
+            } else {
+              handleFieldMissing('r-name', 'Full name not found in your profile.');
+            }
+
+            // --- 4. Fill Email ---
+            const email = (d.email || storedEmail || '').trim();
+            if (email) {
+              fillLockedField('r-email', 'email-badge', email);
+            } else {
+              handleFieldMissing('r-email', 'Email not found in your profile.');
+            }
+
+            showAlert('success', 'bi-person-check-fill',
+              'Your details have been loaded from your account.');
+
+          } else if (res && res.status === 'not_found') {
+            showAuthOverlay();
+
+          } else {
+            handleFetchError(res?.message || 'Could not load your profile. Please try again.');
+          }
+        },
+        error: function (xhr, status) {
+          if (status === 'timeout') {
+            handleFetchError('The server took too long to respond. Please check your connection and refresh.');
+          } else {
+            handleFetchError('Unable to contact the server (' + (xhr.status || 'network error') + '). Please refresh.');
+          }
+        }
+      });
+
+      /* ── error helpers ── */
+      function handleFetchError(msg) {
+        ['r-name', 'r-email'].forEach(function (id) {
+          const el = document.getElementById(id);
+          removeSkeleton(el);
+          el.placeholder = 'Could not load';
+        });
+        showAlert('error', 'bi-exclamation-triangle-fill', msg);
+      }
+
+      function handleFieldMissing(inputId, msg) {
+        const el = document.getElementById(inputId);
+        removeSkeleton(el);
+        el.placeholder = 'Not available';
+        showAlert('warning', 'bi-info-circle-fill', msg);
+      }
+    });
+
+  }());
+  </script>
+</body>
+</html>
